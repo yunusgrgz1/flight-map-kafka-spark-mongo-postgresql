@@ -1,0 +1,36 @@
+# Core Airflow
+apache-airflow==2.7.0  # Main Apache Airflow package
+apache-airflow-providers-amazon==8.11.0  # For AWS services (e.g., S3)
+apache-airflow-providers-postgres==5.5.0  # PostgreSQL support
+apache-airflow-providers-mongo==3.2.0  # MongoDB support (if needed)
+apache-airflow-providers-apache-spark==4.1.1  # For Apache Spark integration
+
+# Databases
+psycopg2-binary==2.9.9  # PostgreSQL driver
+pymongo==4.6.1  # MongoDB driver
+
+# Kafka
+confluent_kafka==2.3.0  # Kafka integration using Confluent client
+
+# Spark
+pyspark==3.5.0  # Apache Spark Python API
+
+# AWS S3 Support
+boto3==1.28.71  # AWS SDK for Python
+botocore==1.31.71  # Low-level AWS SDK required by boto3
+
+# HTTP Requests
+requests==2.31.0  # Standard HTTP library
+charset-normalizer<3  # Compatibility with Snowflake and other tools
+urllib3==1.26.16  # Compatible version for boto3, botocore, and Airflow providers
+idna==3.4  # Domain name support for requests
+certifi==2023.7.22  # Trusted root certificates for HTTPS requests
+
+# Other dependencies required by Airflow
+setproctitle==1.3.2  # To customize process titles
+packaging==21.3  # Required by many providers, compatible version
+cryptography==40.0.2  # Used in GCP, Kafka, and Snowflake providers
+
+# Flask API
+Flask==2.3.3  # Lightweight WSGI web application framework
+Flask-Cors==4.0.0  # CORS (Cross-Origin Resource Sharing) support for Flask
