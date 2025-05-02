@@ -106,7 +106,7 @@ def insert_data_into_postgres(cursor, conn, filtered_data):
                     actual_departure_time,
                     scheduled_arrival_time,
                     actual_landed_time,
-                    delayed
+                    delayed_status
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (
                 doc.get("flight_id"),
