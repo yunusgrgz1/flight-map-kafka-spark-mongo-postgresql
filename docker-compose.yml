@@ -135,6 +135,7 @@ services:
       - ./script/entrypoint.sh:/opt/airflow/script/entrypoint.sh
       - ./requirements.txt:/opt/airflow/requirements.txt 
       - ./plugins:/opt/airflow/plugins
+      - ./outputs:/opt/airflow/outputs
     ports:
       - "8080:8080"
     healthcheck:
@@ -160,6 +161,7 @@ services:
       - ./script/entrypoint.sh:/opt/airflow/script/entrypoint.sh
       - ./requirements.txt:/opt/airflow/requirements.txt
       - ./plugins:/opt/airflow/plugins
+      - ./outputs:/opt/airflow/outputs
     environment:
       - LOAD_EX=n
       - EXECUTOR=Local
