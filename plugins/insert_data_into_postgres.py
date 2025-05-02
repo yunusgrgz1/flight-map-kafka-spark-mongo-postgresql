@@ -56,7 +56,7 @@ def get_data_from_mongo(collection):
                 "scheduled_departure_time": 1,
                 "actual_departure_time": 1,
                 "scheduled_arrival_time": 1,
-                "actual_landed_time": 1
+                "actual_landed_time": 1,
             })
 
         data_list = list(filtered_data)
@@ -66,11 +66,33 @@ def get_data_from_mongo(collection):
         logger.error(f"Error while fetching data from MongoDB: {e}")
         raise
 
+
+
 # Insert data into PostgreSQL
 def insert_data_into_postgres(cursor, conn, filtered_data):
     try:
         logger.info(f"Inserting {len(filtered_data)} records into PostgreSQL...")
         for doc in filtered_data:
+            scheduled_arrival = doc.get("scheduled_arrival_time")
+            actual_landed = doc.get("actual_landed_time")
+
+            delayed_status = None
+            if scheduled_arrival and actual_landed:
+                
+                if isinstance(scheduled_arrival, str):
+                    scheduled_arrival = datetime.fromisoformat(scheduled_arrival)
+                if isinstance(actual_landed, str):
+                    actual_landed = datetime.fromisoformat(actual_landed)
+
+                delay_minutes = (actual_landed - scheduled_arrival).total_seconds() / 60
+
+                if delay_minutes < 15:
+                    delayed_status = "on_time"
+                elif 15 <= delay_minutes < 30:
+                    delayed_status = "slightly_delayed"
+                else:
+                    delayed_status = "too_late"
+
             cursor.execute("""
                 INSERT INTO ucuslar (
                     flight_id,
@@ -83,8 +105,9 @@ def insert_data_into_postgres(cursor, conn, filtered_data):
                     scheduled_departure_time,
                     actual_departure_time,
                     scheduled_arrival_time,
-                    actual_landed_time
-                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                    actual_landed_time,
+                    delayed
+                ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             """, (
                 doc.get("flight_id"),
                 doc.get("airline"),
@@ -95,8 +118,9 @@ def insert_data_into_postgres(cursor, conn, filtered_data):
                 doc.get("arrival_airport"),
                 doc.get("scheduled_departure_time"),
                 doc.get("actual_departure_time"),
-                doc.get("scheduled_arrival_time"),
-                doc.get("actual_landed_time")
+                scheduled_arrival,
+                actual_landed,
+                delayed_status
             ))
 
         conn.commit()
