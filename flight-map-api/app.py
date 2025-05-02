@@ -118,7 +118,7 @@ def calculate_bearing(lat1, lon1, lat2, lon2):
 
 # flights
 flights = []
-for i in range(10):
+for i in range(100): #you can specify this number according to how hard you want to try :)
 
     # random departures and arrivals
     departure, arrival = random.sample(AIRPORTS, 2)
