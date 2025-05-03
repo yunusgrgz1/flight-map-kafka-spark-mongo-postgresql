@@ -22,13 +22,14 @@ default_args = {
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
     "start_date": datetime(2025,4,14),
-    "catchup": False
+    "catchup": False,
 }
 
 dag = DAG(
     dag_id="flights_dag",
     default_args=default_args,
     schedule_interval="@daily",
+    start_date=datetime(2025, 5, 1),
     max_active_runs=1
 )
 
