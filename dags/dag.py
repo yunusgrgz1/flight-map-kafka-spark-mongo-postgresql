@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../plugins')))
 
-
+from daily_report import generate_daily_report
 from insert_data_into_postgres import get_and_insert_data
 
 logger = logging.getLogger('dag_logger')
@@ -21,14 +21,14 @@ default_args = {
     "owner": "airflow",
     "retries": 3,
     "retry_delay": timedelta(minutes=5),
-    "start_date": datetime(2025,4,14)
+    "start_date": datetime(2025,4,14),
+    "catchup": False
 }
 
 dag = DAG(
     dag_id="flights_dag",
     default_args=default_args,
     schedule_interval="@daily",
-    "catchup": False,
     max_active_runs=1
 )
 
@@ -39,12 +39,17 @@ def fetch_data_from_mongo():
     try:
         logger.info("Fetching data from MongoDB")
         get_and_insert_data()
+        logger.info("The data has been inserted into Postgresql")
 
     except Exception as e:
         logger.error(f"An error occured while fetching data {e}")
 
+def daily_report():
+    generate_daily_report()
+    logger.info("The daily report prepared and saved into CSV files")
+
 def end_job():
-    logger.info("Data has been inserted into Postgresql.")
+    logger.info("All process completed.")
 
 
 start_task = PythonOperator(
@@ -57,6 +62,12 @@ fetching_data_task = PythonOperator(
     task_id='fetch_data_job',
     python_callable=fetch_data_from_mongo,
     dag=dag
+)
+
+daily_report_task = PythonOperator(
+    task_id='daily_report_job',
+    python_callable= daily_report,
+    dag = dag
 )
 
 end_task = PythonOperator(
