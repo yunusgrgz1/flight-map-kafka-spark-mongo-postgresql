@@ -76,4 +76,4 @@ end_task = PythonOperator(
     dag=dag
 )
 
-start_task >> fetching_data_task >> end_task
+start_task >> fetching_data_task >> daily_report_task >> end_task
