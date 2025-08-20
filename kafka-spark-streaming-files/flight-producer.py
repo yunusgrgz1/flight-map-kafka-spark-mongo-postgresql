@@ -51,7 +51,6 @@ def spark_dataframe(spark, data):
         logger.error(f"Error sending data to Kafka: {e}")
 
 def process_stream(df, epoch_id):
-    spark = spark_session()
     data = fetch_data()
     if not data:
         logger.warning("No data to process.")
