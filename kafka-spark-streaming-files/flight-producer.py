@@ -20,6 +20,7 @@ url = "http://host.docker.internal:5000/api/flights"
 def spark_session():
     spark = SparkSession.builder \
         .appName("KafkaProducerStreaming") \
+        .master("spark://spark-master:7077") \
         .config("spark.jars.packages", "org.apache.spark:spark-sql-kafka-0-10_2.12:3.5.5") \
         .getOrCreate()
     return spark
